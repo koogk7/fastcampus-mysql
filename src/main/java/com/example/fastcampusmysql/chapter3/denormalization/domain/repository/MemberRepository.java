@@ -25,7 +25,6 @@ public class MemberRepository {
 
     private final JdbcTemplate jdbcTemplate;
 
-    // TODO: createdAt 맵핑
     private static final RowMapper<Member> ROW_MAPPER = (ResultSet resultSet, int rowNum) -> Member.builder()
             .id(resultSet.getLong("id"))
             .nickname(resultSet.getString("nickname"))
@@ -43,8 +42,13 @@ public class MemberRepository {
         return Optional.ofNullable(nullableMember);
     }
 
-
     public Member save(Member member) {
+        if (member.getId() == null)
+            return insert(member);
+        return update(member);
+    }
+
+    private Member insert(Member member) {
         SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName(TABLE)
                 .usingGeneratedKeyColumns("id");
@@ -58,5 +62,11 @@ public class MemberRepository {
                 .email(member.getEmail())
                 .birthday(member.getBirthday())
                 .build();
+    }
+
+    private Member update(Member member) {
+        var sql = String.format("UPDATE `%s` set email = ?, nickname = ?, birthday = ? WHERE id = ?", TABLE);
+        jdbcTemplate.update(sql, member.getEmail(), member.getNickname(), member.getBirthday(), member.getId());
+        return member;
     }
 }
