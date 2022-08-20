@@ -1,6 +1,6 @@
 package com.example.fastcampusmysql.chapter3.denormalization.domain.service;
 
-import com.example.fastcampusmysql.chapter3.denormalization.domain.RegisterMemberCommand;
+import com.example.fastcampusmysql.chapter3.denormalization.domain.dto.RegisterMemberCommand;
 import com.example.fastcampusmysql.chapter3.denormalization.domain.entity.Member;
 import com.example.fastcampusmysql.chapter3.denormalization.domain.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +16,7 @@ public class MemberWriteService {
                 .email(command.email())
                 .nickname(command.nickname())
                 .birthday(command.birthday())
+                .companyCode(command.companyCode())
                 .build();
         return memberRepository.save(member);
     }

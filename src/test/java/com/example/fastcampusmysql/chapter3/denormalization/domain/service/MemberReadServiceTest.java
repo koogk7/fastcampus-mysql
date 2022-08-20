@@ -1,6 +1,5 @@
 package com.example.fastcampusmysql.chapter3.denormalization.domain.service;
 
-import com.example.fastcampusmysql.chapter3.denormalization.domain.entity.Member;
 import com.example.fastcampusmysql.chapter3.denormalization.domain.repository.MemberRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -9,10 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.util.NoSuchElementException;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
@@ -26,17 +22,14 @@ class MemberReadServiceTest {
     @DisplayName("회원 조회 테스트")
     @Test
     public void testGetMember() {
-        var member = Member.builder()
-                .nickname("chairman")
-                .email("pnu@fastcmapus.com")
-                .birthday(LocalDate.now())
-                .build();
+        var member = MemberFixtureFactory.create();
         var id = memberRepository.save(member).getId();
 
         var result = service.getMember(id);
 
         Assertions.assertEquals(id, result.getId());
     }
+
 
     @DisplayName("회원 조회 실패")
     @Test

@@ -1,7 +1,7 @@
 package com.example.fastcampusmysql.chapter3.denormalization.domain.service;
 
 
-import com.example.fastcampusmysql.chapter3.denormalization.domain.RegisterMemberCommand;
+import com.example.fastcampusmysql.chapter3.denormalization.domain.dto.RegisterMemberCommand;
 import com.example.fastcampusmysql.chapter3.denormalization.domain.entity.Member;
 import com.example.fastcampusmysql.chapter3.denormalization.domain.repository.MemberRepository;
 import org.junit.jupiter.api.Assertions;
@@ -28,7 +28,8 @@ class MemberWriteServiceTest {
         var command = new RegisterMemberCommand(
                 "pnu@fastcampus.com",
                 "pnu",
-                LocalDate.now()
+                LocalDate.now(),
+                1L
         );
 
         var member = service.register(command);
@@ -39,7 +40,7 @@ class MemberWriteServiceTest {
     @DisplayName("회원정보 이름 변경 테스트")
     @Test
     public void testChangeName() {
-        Member saved = saveMember("chairman");
+        Member saved = saveMember();
         var expected = "chair";
 
         service.changeNickname(saved.getId(), expected);
@@ -48,12 +49,8 @@ class MemberWriteServiceTest {
         Assertions.assertEquals(expected, result.getNickname());
     }
 
-    private Member saveMember(String name) {
-        var member = Member.builder()
-                .nickname(name)
-                .email("pnu@fastcmapus.com")
-                .birthday(LocalDate.now())
-                .build();
+    private Member saveMember() {
+        var member = MemberFixtureFactory.create();
         return repository.save(member);
     }
 

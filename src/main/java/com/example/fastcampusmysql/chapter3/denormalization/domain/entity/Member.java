@@ -13,21 +13,27 @@ public class Member {
     final private Long id;
 
     private String nickname;
+
     final private String email;
+
     final private LocalDate birthday;
+
+    private Long companyCode;
+
     final private LocalDateTime createdAt;
 
     final private static Long NAME_MAX_LENGTH = 10L;
 
 
     @Builder
-    public Member(Long id, String nickname, String email, LocalDate birthday, LocalDateTime createdAt) {
+    public Member(Long id, String nickname, String email, LocalDate birthday, Long companyCode, LocalDateTime createdAt) {
         this.id = id;
         this.email = Objects.requireNonNull(email);
         this.birthday = Objects.requireNonNull(birthday);
 
         validateNickname(nickname);
         this.nickname = Objects.requireNonNull(nickname);
+        this.companyCode = Objects.requireNonNull(companyCode);
 
         this.createdAt = createdAt == null ? LocalDateTime.now() : createdAt;
     }
@@ -35,6 +41,10 @@ public class Member {
     public void changeNickname(String to) {
         validateNickname(to);
         nickname = to;
+    }
+
+    public void changeCompanyCode(Long to) {
+        companyCode = to;
     }
 
     private void validateNickname(String nickname) {

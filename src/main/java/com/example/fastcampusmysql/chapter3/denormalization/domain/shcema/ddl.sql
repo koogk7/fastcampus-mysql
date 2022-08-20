@@ -9,3 +9,9 @@ create table member
         primary key (id)
 );
 
+
+-- 마이그레이션은 뒷 챕터에 다룸
+alter table member add companyCode int default -1 not null;
+
+
+
