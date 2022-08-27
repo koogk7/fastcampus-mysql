@@ -3,6 +3,8 @@ package com.example.fastcampusmysql.chapter3.denormalization.domain.service;
 
 import com.example.fastcampusmysql.chapter3.denormalization.domain.dto.RegisterMemberCommand;
 import com.example.fastcampusmysql.chapter3.denormalization.domain.entity.Member;
+import com.example.fastcampusmysql.chapter3.denormalization.domain.entity.MemberNicknameHistory;
+import com.example.fastcampusmysql.chapter3.denormalization.domain.repository.MemberNicknameHistoryRepository;
 import com.example.fastcampusmysql.chapter3.denormalization.domain.repository.MemberRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -20,7 +22,10 @@ class MemberWriteServiceTest {
     private MemberWriteService service;
 
     @Autowired
-    private MemberRepository repository;
+    private MemberRepository memberRepository;
+
+    @Autowired
+    private MemberNicknameHistoryRepository memberNicknameHistoryRepository;
 
     @DisplayName("회원정보 등록 테스트")
     @Test
@@ -45,13 +50,29 @@ class MemberWriteServiceTest {
 
         service.changeNickname(saved.getId(), expected);
 
-        var result = repository.findById(saved.getId()).orElseThrow();
+        var result = memberRepository.findById(saved.getId()).orElseThrow();
         Assertions.assertEquals(expected, result.getNickname());
     }
 
+    @DisplayName("회원정보 이름 변경시 변경 이름의 히스토리가 저장된다")
+    @Test
+    public void testToSaveHistoryWhenChangeName() {
+        Member member = saveMember();
+        var nameToChange = "chair";
+
+        service.changeNickname(member.getId(), nameToChange);
+        var results = memberNicknameHistoryRepository.findAllByMemberId(member.getId());
+
+        Assertions.assertEquals(1, results.size());
+        MemberNicknameHistory memberNicknameHistory = results.get(0);
+        Assertions.assertEquals(member.getId(), memberNicknameHistory.getMemberId());
+        Assertions.assertEquals(nameToChange, memberNicknameHistory.getNickname());
+    }
+
+
     private Member saveMember() {
         var member = MemberFixtureFactory.create();
-        return repository.save(member);
+        return memberRepository.save(member);
     }
 
     private void assertEquals(RegisterMemberCommand command, Member member) {

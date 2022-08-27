@@ -9,9 +9,15 @@ create table member
         primary key (id)
 );
 
-
--- 마이그레이션은 뒷 챕터에 다룸
-alter table member add companyCode int default -1 not null;
+create table MemberNicknameHistory
+(
+    id int auto_increment,
+    memberId int not null,
+    nickname varchar(20) not null,
+    createdAt datetime not null,
+    constraint memberNicknameHistory_id_uindex
+        primary key (id)
+);
 
 
 

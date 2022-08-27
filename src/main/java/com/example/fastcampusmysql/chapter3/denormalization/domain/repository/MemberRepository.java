@@ -21,7 +21,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Repository
 public class MemberRepository {
-    static final String TABLE = "MEMBER";
+    static final String TABLE = "member";
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -30,7 +30,6 @@ public class MemberRepository {
             .nickname(resultSet.getString("nickname"))
             .email(resultSet.getString("email"))
             .birthday(resultSet.getObject("birthday", LocalDate.class))
-            .companyCode(resultSet.getLong("companyCode"))
             .createdAt(resultSet.getObject("createdAt", LocalDateTime.class))
             .build();
 
@@ -62,13 +61,12 @@ public class MemberRepository {
                 .nickname(member.getNickname())
                 .email(member.getEmail())
                 .birthday(member.getBirthday())
-                .companyCode(member.getCompanyCode())
                 .build();
     }
 
     private Member update(Member member) {
-        var sql = String.format("UPDATE `%s` set email = ?, nickname = ?, birthday = ?, companyCode = ? WHERE id = ?", TABLE);
-        jdbcTemplate.update(sql, member.getEmail(), member.getNickname(), member.getBirthday(), member.getCompanyCode(), member.getId());
+        var sql = String.format("UPDATE `%s` set email = ?, nickname = ?, birthday = ? WHERE id = ?", TABLE);
+        jdbcTemplate.update(sql, member.getEmail(), member.getNickname(), member.getBirthday(), member.getId());
         return member;
     }
 }
