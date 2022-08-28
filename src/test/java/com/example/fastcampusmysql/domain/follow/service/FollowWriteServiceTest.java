@@ -1,5 +1,6 @@
 package com.example.fastcampusmysql.domain.follow.service;
 
+import com.example.fastcampusmysql.IntegrationTest;
 import com.example.fastcampusmysql.domain.member.entity.Member;
 import com.example.fastcampusmysql.domain.member.repository.MemberRepository;
 import com.example.fastcampusmysql.factory.MemberFixtureFactory;
@@ -7,14 +8,11 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DuplicateKeyException;
-import org.springframework.transaction.annotation.Transactional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
-@Transactional
+@IntegrationTest
 class FollowWriteServiceTest {
     @Autowired
     private MemberRepository memberRepository;

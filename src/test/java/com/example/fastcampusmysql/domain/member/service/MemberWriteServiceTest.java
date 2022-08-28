@@ -1,6 +1,7 @@
 package com.example.fastcampusmysql.domain.member.service;
 
 
+import com.example.fastcampusmysql.IntegrationTest;
 import com.example.fastcampusmysql.factory.MemberFixtureFactory;
 import com.example.fastcampusmysql.domain.member.dto.RegisterMemberCommand;
 import com.example.fastcampusmysql.domain.member.entity.Member;
@@ -16,8 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 
-@SpringBootTest
-@Transactional
+@IntegrationTest
 class MemberWriteServiceTest {
     @Autowired
     private MemberWriteService service;

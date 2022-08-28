@@ -1,5 +1,6 @@
 package com.example.fastcampusmysql.domain.member.service;
 
+import com.example.fastcampusmysql.IntegrationTest;
 import com.example.fastcampusmysql.factory.MemberFixtureFactory;
 import com.example.fastcampusmysql.domain.member.repository.MemberRepository;
 import org.junit.jupiter.api.Assertions;
@@ -11,8 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.NoSuchElementException;
 
-@SpringBootTest
-@Transactional
+@IntegrationTest
 class MemberReadServiceTest {
     @Autowired
     private MemberReadService service;
