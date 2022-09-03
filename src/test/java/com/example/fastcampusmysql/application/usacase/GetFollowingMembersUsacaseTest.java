@@ -1,15 +1,14 @@
 package com.example.fastcampusmysql.application.usacase;
 
 import com.example.fastcampusmysql.IntegrationTest;
-import com.example.fastcampusmysql.domain.follow.service.FollowWriteService;
+import com.example.fastcampusmysql.domain.follow.entity.Follow;
+import com.example.fastcampusmysql.domain.follow.repository.FollowRepository;
 import com.example.fastcampusmysql.domain.member.entity.Member;
 import com.example.fastcampusmysql.domain.member.repository.MemberRepository;
 import com.example.fastcampusmysql.factory.MemberFixtureFactory;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @IntegrationTest
 class GetFollowingMembersUsacaseTest {
@@ -20,17 +19,20 @@ class GetFollowingMembersUsacaseTest {
     private MemberRepository memberRepository;
 
     @Autowired
-    private FollowWriteService followWriteService;
+    private FollowRepository followRepository;
 
     @DisplayName("팔로잉 회원 목록 조회")
     @Test
     public void testExecute() {
-        var member = saveMember();
-        followWriteService.create(member, saveMember());
+        var follow = Follow
+                .builder()
+                .fromMemberId(saveMember().getId())
+                .toMemberId(saveMember().getId())
+                .build();
+        followRepository.save(follow);
 
-        var result = usacase.execute(member.getId());
+        var result = usacase.execute(follow.getFromMemberId());
         System.out.println(result);
-
     }
 
     private Member saveMember() {

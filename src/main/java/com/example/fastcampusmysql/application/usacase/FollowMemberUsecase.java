@@ -14,6 +14,7 @@ public class FollowMemberUsecase {
     public void execute(Long fromMemberId, Long toMemberId) {
         var fromMember = memberReadService.getMember(fromMemberId);
         var toMember = memberReadService.getMember(toMemberId);
+
         followWriteService.create(fromMember, toMember);
     }
 }

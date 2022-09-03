@@ -28,7 +28,7 @@ class MemberReadServiceTest {
 
         var result = service.getMember(id);
 
-        Assertions.assertEquals(id, result.getId());
+        Assertions.assertEquals(id, result.id());
     }
 
 

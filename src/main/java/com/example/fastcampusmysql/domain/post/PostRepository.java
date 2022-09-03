@@ -1,8 +1,7 @@
 package com.example.fastcampusmysql.domain.post;
 
-import com.example.fastcampusmysql.domain.member.entity.Member;
+import com.example.fastcampusmysql.domain.post.dto.DailyPostCountRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -15,8 +14,6 @@ import java.sql.ResultSet;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Repository
@@ -63,8 +60,7 @@ public class PostRepository {
         throw new UnsupportedOperationException("Post는 갱신을 지원하지 않습니다");
     }
 
-    public void saveAll(List<Post> posts) {
-
+    public void bulkInsert(List<Post> posts) {
         var sql = String.format("""
                 INSERT INTO `%s` (memberId, contents, createdDate, createdAt)
                 VALUES (:memberId, :contents, :createdDate, :createdAt)

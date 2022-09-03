@@ -2,16 +2,12 @@ package com.example.fastcampusmysql.domain.post;
 
 import com.example.fastcampusmysql.IntegrationTest;
 import com.example.fastcampusmysql.factory.PostFixtureFactory;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -32,7 +28,7 @@ class PostReadServiceTest {
         var posts = IntStream.range(0, 3)
                 .mapToObj(i -> PostFixtureFactory.create(memberId, _01월_01일))
                 .toList();
-        postRepository.saveAll(posts);
+        postRepository.bulkInsert(posts);
 
         var result = postReadService.getDailyPostCount(memberId, _01월_01일, endDate);
 
@@ -50,7 +46,7 @@ class PostReadServiceTest {
                 .mapToObj(i -> PostFixtureFactory.create(10L, startDate, startDate.plusDays(30)))
                 .toList();
 
-        postRepository.saveAll(a);
+        postRepository.bulkInsert(a);
     }
 
 }
