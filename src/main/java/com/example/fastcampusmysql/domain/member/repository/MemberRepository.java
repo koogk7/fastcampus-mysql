@@ -3,7 +3,7 @@ package com.example.fastcampusmysql.domain.member.repository;
 import com.example.fastcampusmysql.domain.member.entity.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.support.DataAccessUtils;
-import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -24,6 +24,9 @@ public class MemberRepository {
     static final String TABLE = "member";
 
     private final NamedParameterJdbcTemplate jdbcTemplate;
+
+//     BeanPropertyRowMapper은 사용하면 별도 맵퍼가 필요 없지만, 기본생성자 + setter를 이용해서 만들기때문에 final 필드를 열어줘야함
+//    private final BeanPropertyRowMapper<Member> mapper = BeanPropertyRowMapper.newInstance(Member.class);
 
     private static final RowMapper<Member> ROW_MAPPER = (ResultSet resultSet, int rowNum) -> Member.builder()
             .id(resultSet.getLong("id"))

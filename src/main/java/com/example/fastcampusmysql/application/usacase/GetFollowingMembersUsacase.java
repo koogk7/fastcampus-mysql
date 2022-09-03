@@ -18,6 +18,7 @@ public class GetFollowingMembersUsacase {
 
     public List<Member> execute(Long memberId) {
         var follows = followReadService.getFollowings(memberId);
+
         var memberIds = follows
                 .stream()
                 .map(Follow::getToMemberId)
