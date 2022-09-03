@@ -7,6 +7,8 @@ import com.example.fastcampusmysql.factory.PostFixtureFactory;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
 import java.time.LocalDate;
 import java.util.stream.IntStream;
@@ -38,6 +40,18 @@ class PostReadServiceTest {
         assertEquals(1, result.size());
         assertEquals(3, result.get(0).postCount());
         assertEquals(_01월_01일, result.get(0).date());
+    }
+
+    @DisplayName("페이징쿼리")
+    @Test
+    public void testPage() {
+        PageRequest pageRequest = PageRequest.of(0, 10,
+                Sort.by("createdDate").descending()
+                    .and(Sort.by("id").descending())
+        );
+        var result = postReadService.getPosts(10L, pageRequest);
+
+        System.out.println(result.stream().map(it -> it.getCreatedDate().toString() + " " + it.getId()).toList());
     }
 
     @DisplayName("벌크 인서트")

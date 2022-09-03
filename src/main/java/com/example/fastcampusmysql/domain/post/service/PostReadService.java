@@ -5,6 +5,8 @@ import com.example.fastcampusmysql.domain.post.entity.Post;
 import com.example.fastcampusmysql.domain.post.PostRepository;
 import com.example.fastcampusmysql.domain.post.dto.DailyPostCountRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,6 +22,10 @@ public class PostReadService {
 
     public List<DailyPostCount> getDailyPostCount(DailyPostCountRequest request) {
         return postRepository.groupByCreatedDate(request);
+    }
+
+    public Page<Post> getPosts(Long memberId, PageRequest pageRequest) {
+        return postRepository.findAllByMemberId(memberId, pageRequest);
     }
 
 }
