@@ -4,8 +4,6 @@ import com.example.fastcampusmysql.domain.member.dto.MemberDto;
 import com.example.fastcampusmysql.domain.member.entity.Member;
 import org.jeasy.random.EasyRandom;
 import org.jeasy.random.EasyRandomParameters;
-import org.jeasy.random.randomizers.number.LongRandomizer;
-import org.jeasy.random.randomizers.range.LocalDateRangeRandomizer;
 import org.jeasy.random.randomizers.range.LongRangeRandomizer;
 import org.jeasy.random.randomizers.text.StringRandomizer;
 import org.jeasy.random.randomizers.time.LocalDateRandomizer;

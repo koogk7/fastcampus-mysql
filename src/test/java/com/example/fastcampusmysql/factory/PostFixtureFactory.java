@@ -1,7 +1,6 @@
 package com.example.fastcampusmysql.factory;
 
-import com.example.fastcampusmysql.domain.member.entity.Member;
-import com.example.fastcampusmysql.domain.post.Post;
+import com.example.fastcampusmysql.domain.post.entity.Post;
 import org.jeasy.random.EasyRandom;
 import org.jeasy.random.EasyRandomParameters;
 import org.jeasy.random.randomizers.range.LocalDateRangeRandomizer;
@@ -9,7 +8,6 @@ import org.jeasy.random.randomizers.range.LongRangeRandomizer;
 
 import java.lang.reflect.Field;
 import java.time.LocalDate;
-import java.util.Optional;
 import java.util.function.Predicate;
 
 import static org.jeasy.random.FieldPredicates.*;

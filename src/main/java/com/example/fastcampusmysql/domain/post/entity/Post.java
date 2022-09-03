@@ -1,4 +1,4 @@
-package com.example.fastcampusmysql.domain.post;
+package com.example.fastcampusmysql.domain.post.entity;
 
 import lombok.Builder;
 import lombok.Getter;

@@ -1,6 +1,8 @@
 package com.example.fastcampusmysql.domain.post;
 
 import com.example.fastcampusmysql.IntegrationTest;
+import com.example.fastcampusmysql.domain.post.dto.DailyPostCountRequest;
+import com.example.fastcampusmysql.domain.post.service.PostReadService;
 import com.example.fastcampusmysql.factory.PostFixtureFactory;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -30,7 +32,8 @@ class PostReadServiceTest {
                 .toList();
         postRepository.bulkInsert(posts);
 
-        var result = postReadService.getDailyPostCount(memberId, _01월_01일, endDate);
+        var request = new DailyPostCountRequest(memberId, _01월_01일, endDate);
+        var result = postReadService.getDailyPostCount(request);
 
         assertEquals(1, result.size());
         assertEquals(3, result.get(0).postCount());
