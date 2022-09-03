@@ -4,6 +4,7 @@ import com.example.fastcampusmysql.IntegrationTest;
 import com.example.fastcampusmysql.domain.post.dto.DailyPostCountRequest;
 import com.example.fastcampusmysql.domain.post.service.PostReadService;
 import com.example.fastcampusmysql.factory.PostFixtureFactory;
+import com.example.fastcampusmysql.util.CursorRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,6 +54,22 @@ class PostReadServiceTest {
 
         System.out.println(result.stream().map(it -> it.getCreatedDate().toString() + " " + it.getId()).toList());
     }
+
+    @DisplayName("커서 페이징")
+    @Test
+    public void testCursorPage() {
+        var cursor = new CursorRequest(24L, 2);
+        var result = postReadService.getPosts(-1L, cursor);
+
+        System.out.println("Next Cusor: " + result.nextCursorRequest());
+        System.out.println(result.body()
+                .stream()
+                .map(it -> it.getCreatedDate().toString() + " " + it.getId() + " "+ it.getContents())
+                .toList()
+        );
+    }
+
+
 
     @DisplayName("벌크 인서트")
     @Test

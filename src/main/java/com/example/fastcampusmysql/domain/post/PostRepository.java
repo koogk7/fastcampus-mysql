@@ -3,7 +3,9 @@ package com.example.fastcampusmysql.domain.post;
 import com.example.fastcampusmysql.domain.post.dto.DailyPostCountRequest;
 import com.example.fastcampusmysql.domain.post.dto.DailyPostCount;
 import com.example.fastcampusmysql.domain.post.entity.Post;
-import com.example.fastcampusmysql.helper.PageHelper;
+import com.example.fastcampusmysql.util.CursorRequest;
+import com.example.fastcampusmysql.util.PageCursor;
+import com.example.fastcampusmysql.util.PageHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -91,23 +93,43 @@ public class PostRepository {
         return jdbcTemplate.queryForObject(countQuery,  countParam, Integer.class);
     }
 
+    public List<Post> findAllByLessThanIdAndMemberIdAndOrderByIdDesc(Long id, Long memberId, int size) {
+        var params = new MapSqlParameterSource()
+                .addValue("id", id)
+                .addValue("memberId", memberId)
+                .addValue("size", size);
+
+        String query = String.format("""
+                SELECT *
+                FROM %s
+                WHERE memberId = :memberId and id < :id
+                ORDER BY id DESC
+                LIMIT :size
+                """, TABLE);
+
+        return jdbcTemplate.query(query, params, ROW_MAPPER);
+    }
+
+    public List<Post> findAllByMemberIdAndOrderByIdDesc(Long memberId, int size) {
+        var params = new MapSqlParameterSource()
+                .addValue("memberId", memberId)
+                .addValue("size", size);
+
+        String query = String.format("""
+                SELECT *
+                FROM %s
+                WHERE memberId = :memberId
+                ORDER BY id DESC
+                LIMIT :size
+                """, TABLE);
+
+        return jdbcTemplate.query(query, params, ROW_MAPPER);
+    }
+
     public Post save(Post post) {
         if (post.getId() == null)
             return insert(post);
         throw new UnsupportedOperationException("Post는 갱신을 지원하지 않습니다");
-    }
-
-    public void bulkInsert(List<Post> posts) {
-        var sql = String.format("""
-                INSERT INTO `%s` (memberId, contents, createdDate, createdAt)
-                VALUES (:memberId, :contents, :createdDate, :createdAt)
-                """, TABLE);
-
-        SqlParameterSource[] params = posts
-                .stream()
-                .map(BeanPropertySqlParameterSource::new)
-                .toArray(SqlParameterSource[]::new);
-        jdbcTemplate.batchUpdate(sql, params);
     }
 
     private Post insert(Post post) {
@@ -125,6 +147,19 @@ public class PostRepository {
                 .createdDate(post.getCreatedDate())
                 .createdAt(post.getCreatedAt())
                 .build();
+    }
+
+    public void bulkInsert(List<Post> posts) {
+        var sql = String.format("""
+                INSERT INTO `%s` (memberId, contents, createdDate, createdAt)
+                VALUES (:memberId, :contents, :createdDate, :createdAt)
+                """, TABLE);
+
+        SqlParameterSource[] params = posts
+                .stream()
+                .map(BeanPropertySqlParameterSource::new)
+                .toArray(SqlParameterSource[]::new);
+        jdbcTemplate.batchUpdate(sql, params);
     }
 
 }
