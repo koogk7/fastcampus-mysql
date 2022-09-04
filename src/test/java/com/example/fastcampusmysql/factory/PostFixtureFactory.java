@@ -36,11 +36,20 @@ public class PostFixtureFactory {
         return new EasyRandom(parameter).nextObject(Post.class);
     }
 
+    public static EasyRandom get(Long memberId, LocalDate start, LocalDate end) {
+        EasyRandomParameters parameter = getEasyRandomParameters();
+        parameter
+                .randomize(memberId(), () -> memberId)
+                .randomize(createdDate(), new LocalDateRangeRandomizer(start, end));
+
+        return new EasyRandom(parameter);
+    }
+
     private static EasyRandomParameters getEasyRandomParameters() {
         return new EasyRandomParameters()
                 .excludeField(named("id"))
                 .stringLengthRange(1, 100)
-                .randomize(Long.class, new LongRangeRandomizer(1L, 10000L));
+                .randomize(Long.class, new LongRangeRandomizer(1L, 100000L));
     }
 
     private static Predicate<Field> memberId() {

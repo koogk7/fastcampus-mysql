@@ -2,18 +2,25 @@ package com.example.fastcampusmysql.domain.post;
 
 import com.example.fastcampusmysql.IntegrationTest;
 import com.example.fastcampusmysql.domain.post.dto.DailyPostCountRequest;
+import com.example.fastcampusmysql.domain.post.entity.Post;
 import com.example.fastcampusmysql.domain.post.service.PostReadService;
 import com.example.fastcampusmysql.factory.PostFixtureFactory;
 import com.example.fastcampusmysql.util.CursorRequest;
+import org.jeasy.random.EasyRandom;
+import org.jeasy.random.EasyRandomParameters;
+import org.jeasy.random.randomizers.range.LocalDateRangeRandomizer;
+import org.jeasy.random.randomizers.range.LongRangeRandomizer;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.util.StopWatch;
 
 import java.time.LocalDate;
 import java.util.stream.IntStream;
 
+import static org.jeasy.random.FieldPredicates.named;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @IntegrationTest
@@ -74,13 +81,27 @@ class PostReadServiceTest {
     @DisplayName("벌크 인서트")
     @Test
     public void bulkInsert() {
-        LocalDate startDate = LocalDate.of(2022, 1, 1);
+        LocalDate startDate = LocalDate.of(4000, 1, 1);
+        LocalDate endDate = LocalDate.of(9990, 1, 1);
 
-        var a = IntStream.range(0, 100)
-                .mapToObj(i -> PostFixtureFactory.create(10L, startDate, startDate.plusDays(30)))
+        var fixture = PostFixtureFactory.get(-1L, startDate, endDate);
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+
+        var a = IntStream.range(0, 1000000)
+                .parallel()
+                .mapToObj(i -> fixture.nextObject(Post.class))
                 .toList();
 
+        stopWatch.stop();
+        System.out.println("객체 생성 시간: " + stopWatch.getTotalTimeSeconds());
+
+        StopWatch queryStopWatch = new StopWatch();
+        queryStopWatch.start();
+
         postRepository.bulkInsert(a);
+        queryStopWatch.stop();
+        System.out.println("쿼리 실행 시간: " + queryStopWatch.getTotalTimeSeconds());
     }
 
 }
