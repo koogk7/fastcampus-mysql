@@ -39,7 +39,7 @@ public class MemberRepository {
     public Optional<Member> findById(Long id) {
         var params = new MapSqlParameterSource()
                 .addValue("id", id);
-        String query = String.format("SELECT * FROM `%s` WHERE id = :id", TABLE);
+        String query = String.format("SELECT * FROM %s WHERE id = :id", TABLE);
         List<Member> members = jdbcTemplate.query(query, params, ROW_MAPPER);
 
         // jdbcTemplate.query의 결과 사이즈가 0이면 null, 2 이상이면 예외
@@ -48,9 +48,13 @@ public class MemberRepository {
     }
 
     public List<Member> findAllByIdIn(List<Long> ids) {
+        if (ids.isEmpty()) {
+            return List.of();
+        }
+
         var params = new MapSqlParameterSource()
                 .addValue("ids", ids);
-        String query = String.format("SELECT * FROM `%s` WHERE id in (:ids)", TABLE);
+        String query = String.format("SELECT * FROM %s WHERE id in (:ids)", TABLE);
         return jdbcTemplate.query(query, params, ROW_MAPPER);
     }
 
