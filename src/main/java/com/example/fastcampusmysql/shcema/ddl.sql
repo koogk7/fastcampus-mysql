@@ -1,4 +1,4 @@
-create table member
+create table Member
 (
     id int auto_increment,
     email varchar(20) not null,
