@@ -88,7 +88,8 @@ class PostReadServiceTest {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
 
-        var a = IntStream.range(0, 1000000)
+        var _1만 = 10000;
+        var posts = IntStream.range(0, _1만 * 100)
                 .parallel()
                 .mapToObj(i -> fixture.nextObject(Post.class))
                 .toList();
@@ -99,7 +100,7 @@ class PostReadServiceTest {
         StopWatch queryStopWatch = new StopWatch();
         queryStopWatch.start();
 
-        postRepository.bulkInsert(a);
+        postRepository.bulkInsert(posts);
         queryStopWatch.stop();
         System.out.println("쿼리 실행 시간: " + queryStopWatch.getTotalTimeSeconds());
     }

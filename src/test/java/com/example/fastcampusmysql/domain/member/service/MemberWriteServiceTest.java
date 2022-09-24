@@ -34,8 +34,7 @@ class MemberWriteServiceTest {
         var command = new RegisterMemberCommand(
                 "pnu@fastcampus.com",
                 "pnu",
-                LocalDate.now(),
-                1L
+                LocalDate.now()
         );
 
         var member = service.register(command);
