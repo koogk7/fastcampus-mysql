@@ -2,25 +2,19 @@ package com.example.fastcampusmysql.domain.post;
 
 import com.example.fastcampusmysql.IntegrationTest;
 import com.example.fastcampusmysql.domain.post.dto.DailyPostCountRequest;
-import com.example.fastcampusmysql.domain.post.entity.Post;
+import com.example.fastcampusmysql.domain.post.repository.PostRepository;
 import com.example.fastcampusmysql.domain.post.service.PostReadService;
 import com.example.fastcampusmysql.factory.PostFixtureFactory;
 import com.example.fastcampusmysql.util.CursorRequest;
-import org.jeasy.random.EasyRandom;
-import org.jeasy.random.EasyRandomParameters;
-import org.jeasy.random.randomizers.range.LocalDateRangeRandomizer;
-import org.jeasy.random.randomizers.range.LongRangeRandomizer;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.util.StopWatch;
 
 import java.time.LocalDate;
 import java.util.stream.IntStream;
 
-import static org.jeasy.random.FieldPredicates.named;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @IntegrationTest
@@ -43,7 +37,7 @@ class PostReadServiceTest {
         postRepository.bulkInsert(posts);
 
         var request = new DailyPostCountRequest(memberId, _01월_01일, endDate);
-        var result = postReadService.getDailyPostCount(request);
+        var result = postReadService.getDailyPostCounts(request);
 
         assertEquals(1, result.size());
         assertEquals(3, result.get(0).postCount());
@@ -74,35 +68,6 @@ class PostReadServiceTest {
                 .map(it -> it.getCreatedDate().toString() + " " + it.getId() + " "+ it.getContents())
                 .toList()
         );
-    }
-
-
-
-    @DisplayName("벌크 인서트")
-    @Test
-    public void bulkInsert() {
-        LocalDate startDate = LocalDate.of(4000, 1, 1);
-        LocalDate endDate = LocalDate.of(9990, 1, 1);
-
-        var fixture = PostFixtureFactory.get(-1L, startDate, endDate);
-        StopWatch stopWatch = new StopWatch();
-        stopWatch.start();
-
-        var _1만 = 10000;
-        var posts = IntStream.range(0, _1만 * 100)
-                .parallel()
-                .mapToObj(i -> fixture.nextObject(Post.class))
-                .toList();
-
-        stopWatch.stop();
-        System.out.println("객체 생성 시간: " + stopWatch.getTotalTimeSeconds());
-
-        StopWatch queryStopWatch = new StopWatch();
-        queryStopWatch.start();
-
-        postRepository.bulkInsert(posts);
-        queryStopWatch.stop();
-        System.out.println("쿼리 실행 시간: " + queryStopWatch.getTotalTimeSeconds());
     }
 
 }

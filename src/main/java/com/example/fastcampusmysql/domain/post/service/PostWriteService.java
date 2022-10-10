@@ -1,7 +1,7 @@
 package com.example.fastcampusmysql.domain.post.service;
 
 import com.example.fastcampusmysql.domain.post.entity.Post;
-import com.example.fastcampusmysql.domain.post.PostRepository;
+import com.example.fastcampusmysql.domain.post.repository.PostRepository;
 import com.example.fastcampusmysql.domain.post.dto.PostCommand;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,9 +19,5 @@ public class PostWriteService {
                 .build();
 
         return postRepository.save(post).getId();
-    }
-
-    public void bulkCreate() {
-
     }
 }

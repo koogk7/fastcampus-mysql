@@ -5,6 +5,7 @@ import com.example.fastcampusmysql.domain.follow.repository.FollowRepository;
 import com.example.fastcampusmysql.domain.member.dto.MemberDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 @RequiredArgsConstructor
 @Service
@@ -12,9 +13,7 @@ public class FollowWriteService {
     final private FollowRepository followRepository;
 
     public Follow create(MemberDto fromMember, MemberDto toMember) {
-        if (fromMember.id().equals(toMember.id())) {
-            throw new IllegalArgumentException("From, To 회원이 동일합니다");
-        }
+        Assert.isTrue(!fromMember.id().equals(toMember.id()), "From, To 회원이 동일합니다.");
 
         var follow = Follow
                 .builder()

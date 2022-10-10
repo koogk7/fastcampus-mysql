@@ -1,13 +1,15 @@
 package com.example.fastcampusmysql.application.controller;
 
+import com.example.fastcampusmysql.domain.post.dto.DailyPostCount;
+import com.example.fastcampusmysql.domain.post.dto.DailyPostCountRequest;
+import com.example.fastcampusmysql.domain.post.dto.PostCommand;
 import com.example.fastcampusmysql.domain.post.service.PostReadService;
 import com.example.fastcampusmysql.domain.post.service.PostWriteService;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-@Tag(name = "게시물 관리")
+import java.util.List;
+
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/posts")
@@ -15,5 +17,13 @@ public class PostController {
     final private PostWriteService postWriteService;
     final private PostReadService postReadService;
 
-    // TODO: PostDto 정의
+    @PostMapping("")
+    public Long create(@RequestBody PostCommand command) {
+        return postWriteService.create(command);
+    }
+    
+    @GetMapping("/daily-post-counts")
+    public List<DailyPostCount> getDailyPostCounts(DailyPostCountRequest request) {
+        return postReadService.getDailyPostCounts(request);
+    }
 }

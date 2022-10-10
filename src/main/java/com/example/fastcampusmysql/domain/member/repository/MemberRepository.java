@@ -3,7 +3,6 @@ package com.example.fastcampusmysql.domain.member.repository;
 import com.example.fastcampusmysql.domain.member.entity.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.support.DataAccessUtils;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -21,9 +20,9 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Repository
 public class MemberRepository {
-    static final String TABLE = "member";
+    static final String TABLE = "Member";
 
-    private final NamedParameterJdbcTemplate jdbcTemplate;
+    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
 //     BeanPropertyRowMapper은 사용하면 별도 맵퍼가 필요 없지만, 기본생성자 + setter를 이용해서 만들기때문에 final 필드를 열어줘야함
 //    private final BeanPropertyRowMapper<Member> mapper = BeanPropertyRowMapper.newInstance(Member.class);
@@ -37,10 +36,10 @@ public class MemberRepository {
             .build();
 
     public Optional<Member> findById(Long id) {
+        var sql = String.format("SELECT * FROM %s WHERE id = :id ", TABLE);
         var params = new MapSqlParameterSource()
                 .addValue("id", id);
-        String query = String.format("SELECT * FROM %s WHERE id = :id", TABLE);
-        List<Member> members = jdbcTemplate.query(query, params, ROW_MAPPER);
+        List<Member> members = namedParameterJdbcTemplate.query(sql, params, ROW_MAPPER);
 
         // jdbcTemplate.query의 결과 사이즈가 0이면 null, 2 이상이면 예외
         Member nullableMember = DataAccessUtils.singleResult(members);
@@ -52,10 +51,9 @@ public class MemberRepository {
             return List.of();
         }
 
-        var params = new MapSqlParameterSource()
-                .addValue("ids", ids);
-        String query = String.format("SELECT * FROM %s WHERE id in (:ids)", TABLE);
-        return jdbcTemplate.query(query, params, ROW_MAPPER);
+        String sql = String.format("SELECT * FROM %s WHERE id in (:ids)", TABLE);
+        var params = new MapSqlParameterSource().addValue("ids", ids);
+        return namedParameterJdbcTemplate.query(sql, params, ROW_MAPPER);
     }
 
     public Member save(Member member) {
@@ -65,7 +63,7 @@ public class MemberRepository {
     }
 
     private Member insert(Member member) {
-        SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(jdbcTemplate.getJdbcTemplate())
+        SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(namedParameterJdbcTemplate.getJdbcTemplate())
                 .withTableName(TABLE)
                 .usingGeneratedKeyColumns("id");
 
@@ -81,9 +79,9 @@ public class MemberRepository {
     }
 
     private Member update(Member member) {
-        var params = new BeanPropertySqlParameterSource(member);
-        var sql = String.format("UPDATE `%s` set email = :email, nickname = :nickname, birthday = :birthday WHERE id = :id", TABLE);
-        jdbcTemplate.update(sql, params);
+        var sql = String.format("UPDATE %s set email = :email, nickname = :nickname, birthday = :birthday WHERE id = :id", TABLE);
+        SqlParameterSource params = new BeanPropertySqlParameterSource(member);
+        namedParameterJdbcTemplate.update(sql, params);
         return member;
     }
 }

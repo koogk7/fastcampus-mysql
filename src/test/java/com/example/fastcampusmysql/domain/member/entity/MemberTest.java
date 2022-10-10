@@ -23,7 +23,7 @@ class MemberTest {
     public void testNicknameMaxLength() {
         var member = MemberFixtureFactory.create();
         var overMaxLengthName = "superChairman";
-
+                                       
         Assertions.assertThrows(
                 IllegalArgumentException.class,
                 () -> member.changeNickname(overMaxLengthName)

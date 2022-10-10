@@ -2,9 +2,10 @@ package com.example.fastcampusmysql.domain.follow.repository;
 
 import com.example.fastcampusmysql.domain.follow.entity.Follow;
 import lombok.RequiredArgsConstructor;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
@@ -18,7 +19,7 @@ import java.util.List;
 public class FollowRepository {
     static final String TABLE = "follow";
 
-    private final JdbcTemplate jdbcTemplate;
+    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     private static final RowMapper<Follow> ROW_MAPPER = (ResultSet resultSet, int rowNum) -> Follow.builder()
             .id(resultSet.getLong("id"))
@@ -28,8 +29,9 @@ public class FollowRepository {
             .build();
 
     public List<Follow> findAllByFromMemberId(Long fromMemberId) {
-        String query = String.format("SELECT * FROM `%s` WHERE fromMemberId = ?", TABLE);
-        return jdbcTemplate.query(query, ROW_MAPPER, fromMemberId);
+        var sql = String.format("SELECT * FROM %s WHERE fromMemberId = :fromMemberId", TABLE);
+        var params = new MapSqlParameterSource().addValue("fromMemberId", fromMemberId);
+        return namedParameterJdbcTemplate.query(sql, params, ROW_MAPPER);
     }
 
     public Follow save(Follow follow) {
@@ -40,7 +42,7 @@ public class FollowRepository {
     }
 
     private Follow insert(Follow follow) {
-        SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
+        SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(namedParameterJdbcTemplate.getJdbcTemplate())
                 .withTableName(TABLE)
                 .usingGeneratedKeyColumns("id");
 

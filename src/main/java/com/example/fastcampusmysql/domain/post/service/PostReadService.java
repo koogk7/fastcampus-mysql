@@ -2,7 +2,7 @@ package com.example.fastcampusmysql.domain.post.service;
 
 import com.example.fastcampusmysql.domain.post.dto.DailyPostCount;
 import com.example.fastcampusmysql.domain.post.entity.Post;
-import com.example.fastcampusmysql.domain.post.PostRepository;
+import com.example.fastcampusmysql.domain.post.repository.PostRepository;
 import com.example.fastcampusmysql.domain.post.dto.DailyPostCountRequest;
 import com.example.fastcampusmysql.util.CursorRequest;
 import com.example.fastcampusmysql.util.PageCursor;
@@ -22,7 +22,7 @@ public class PostReadService {
         return postRepository.findByMemberId(memberId);
     }
 
-    public List<DailyPostCount> getDailyPostCount(DailyPostCountRequest request) {
+    public List<DailyPostCount> getDailyPostCounts(DailyPostCountRequest request) {
         return postRepository.groupByCreatedDate(request);
     }
 
