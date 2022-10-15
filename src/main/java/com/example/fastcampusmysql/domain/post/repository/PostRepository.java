@@ -81,6 +81,49 @@ public class PostRepository {
         return new PageImpl<Post>(posts, pageRequest, getCount(memberId));
     }
 
+    public List<Post> findAllByLessThanIdAndMemberIdInAndOrderByIdDesc(Long id, List<Long> memberIds, int size) {
+        if (memberIds.isEmpty()) {
+            return List.of();
+        }
+
+        var params = new MapSqlParameterSource()
+                .addValue("id", id)
+                .addValue("memberIds", memberIds)
+                .addValue("size", size);
+
+        String query = String.format("""
+                SELECT *
+                FROM %s
+                WHERE memberId in (:memberIds) and id < :id
+                ORDER BY id DESC
+                LIMIT :size
+                """, TABLE);
+
+        return namedParameterJdbcTemplate.query(query, params, ROW_MAPPER);
+
+    }
+
+    public List<Post> findAllByMemberIdInAndOrderByIdDesc(List<Long> memberIds, int size) {
+        if (memberIds.isEmpty()) {
+            return List.of();
+        }
+
+        var params = new MapSqlParameterSource()
+                .addValue("memberIds", memberIds)
+                .addValue("size", size);
+
+        String query = String.format("""
+                SELECT *
+                FROM %s
+                WHERE memberId in (:memberIds)
+                ORDER BY id DESC
+                LIMIT :size
+                """, TABLE);
+
+        return namedParameterJdbcTemplate.query(query, params, ROW_MAPPER);
+
+    }
+
     private Integer getCount(Long memberId) {
         String countQuery = String.format("""
                 SELECT count(id)
