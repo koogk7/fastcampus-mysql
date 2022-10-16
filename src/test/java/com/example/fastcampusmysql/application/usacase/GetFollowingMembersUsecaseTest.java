@@ -11,9 +11,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @IntegrationTest
-class GetFollowingMembersUsacaseTest {
+class GetFollowingMembersUsecaseTest {
     @Autowired
-    private GetFollowingMembersUsacase usacase;
+    private GetFollowingMembersUsecase usacase;
 
     @Autowired
     private MemberRepository memberRepository;

@@ -1,7 +1,7 @@
 package com.example.fastcampusmysql.application.controller;
 
 import com.example.fastcampusmysql.application.usacase.CreateFollowMemberUsecase;
-import com.example.fastcampusmysql.application.usacase.GetFollowingMembersUsacase;
+import com.example.fastcampusmysql.application.usacase.GetFollowingMembersUsecase;
 import com.example.fastcampusmysql.domain.member.dto.MemberDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -16,7 +16,7 @@ import java.util.List;
 @RequestMapping("/follow")
 public class FollowController {
     final private CreateFollowMemberUsecase createFollowMemberUsecase;
-    final private GetFollowingMembersUsacase getFollowingMembersUsacase;
+    final private GetFollowingMembersUsecase getFollowingMembersUsacase;
 
     @Operation(summary = "팔로우 등록")
     @PostMapping("/{fromId}/{toId}")

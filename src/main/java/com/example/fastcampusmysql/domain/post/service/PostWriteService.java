@@ -3,6 +3,7 @@ package com.example.fastcampusmysql.domain.post.service;
 import com.example.fastcampusmysql.domain.post.entity.Post;
 import com.example.fastcampusmysql.domain.post.repository.PostRepository;
 import com.example.fastcampusmysql.domain.post.dto.PostCommand;
+import com.example.fastcampusmysql.domain.post.repository.TimelineRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
