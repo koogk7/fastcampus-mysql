@@ -24,7 +24,7 @@ public class MemberController {
     @Operation(summary = "회원정보 등록")
     @PostMapping("")
     public MemberDto register(@RequestBody RegisterMemberCommand command) {
-        var member = memberWriteService.register(command);
+        var member = memberWriteService.create(command);
         return memberReadService.toDto(member);
     }
 
