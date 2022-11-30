@@ -46,6 +46,8 @@ create table POST
 
 alter table POST add column likeCount int;
 
+alter table POST add column version int default 0;
+
 create index POST__index_member_id
     on POST (memberId);
 
