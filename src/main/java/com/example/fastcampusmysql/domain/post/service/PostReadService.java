@@ -1,7 +1,9 @@
 package com.example.fastcampusmysql.domain.post.service;
 
 import com.example.fastcampusmysql.domain.post.dto.DailyPostCount;
+import com.example.fastcampusmysql.domain.post.dto.PostDto;
 import com.example.fastcampusmysql.domain.post.entity.Post;
+import com.example.fastcampusmysql.domain.post.repository.PostLikeRepository;
 import com.example.fastcampusmysql.domain.post.repository.PostRepository;
 import com.example.fastcampusmysql.domain.post.dto.DailyPostCountRequest;
 import com.example.fastcampusmysql.util.CursorRequest;
@@ -18,25 +20,45 @@ import java.util.List;
 public class PostReadService {
     final private PostRepository postRepository;
 
+    final private PostLikeRepository postLikeRepository;
+
     public List<Post> getPosts(Long memberId) {
         return postRepository.findByMemberId(memberId);
     }
 
-    public List<Post> getPosts(List<Long> postIds) {
-        return postRepository.findAllByIdIn(postIds);
+    public Post getPost(Long postId) {
+        return postRepository.findById(postId, false).orElseThrow();
     }
 
-    public PageCursor<Post> getPosts(List<Long> memberIds, CursorRequest cursorRequest) {
+    public List<PostDto> getPostDtos(List<Long> postIds) {
+        return postRepository.findAllByIdIn(postIds).stream().map(this::toDto).toList();
+    }
+
+    public PageCursor<PostDto> getPostDtos(List<Long> memberIds, CursorRequest cursorRequest) {
         var posts = findAllBy(memberIds, cursorRequest);
         long nextKey = getNextKey(posts);
-        return new PageCursor<Post>(cursorRequest.next(nextKey), posts);
+        var postDtos = posts.stream().map(this::toDto).toList();
+        return new PageCursor<>(cursorRequest.next(nextKey), postDtos);
+    }
+    private PostDto toDto(Post post) {
+        return new PostDto(
+                post.getId(),
+                post.getMemberId(),
+                post.getContents(),
+                post.getCreatedAt(),
+                postLikeRepository.countByPostId(post.getId())
+        );
     }
 
     public List<DailyPostCount> getDailyPostCounts(DailyPostCountRequest request) {
         return postRepository.groupByCreatedDate(request);
     }
 
-    public Page<Post> getPosts(Long memberId, PageRequest pageRequest) {
+    public Page<PostDto> getPostDtos(Long memberId, PageRequest pageRequest) {
+        return postRepository.findAllByMemberId(memberId, pageRequest).map(this::toDto);
+    }
+
+    public Page<Post> getPost(Long memberId, PageRequest pageRequest) {
         return postRepository.findAllByMemberId(memberId, pageRequest);
     }
 

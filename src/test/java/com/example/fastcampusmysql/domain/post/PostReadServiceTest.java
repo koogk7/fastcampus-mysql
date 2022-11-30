@@ -51,7 +51,7 @@ class PostReadServiceTest {
                 Sort.by("createdDate").descending()
                     .and(Sort.by("id").descending())
         );
-        var result = postReadService.getPosts(10L, pageRequest);
+        var result = postReadService.getPost(10L, pageRequest);
 
         System.out.println(result.stream().map(it -> it.getCreatedDate().toString() + " " + it.getId()).toList());
     }

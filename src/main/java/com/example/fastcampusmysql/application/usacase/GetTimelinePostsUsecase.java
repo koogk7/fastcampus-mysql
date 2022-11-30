@@ -2,7 +2,7 @@ package com.example.fastcampusmysql.application.usacase;
 
 import com.example.fastcampusmysql.domain.follow.entity.Follow;
 import com.example.fastcampusmysql.domain.follow.service.FollowReadService;
-import com.example.fastcampusmysql.domain.post.entity.Post;
+import com.example.fastcampusmysql.domain.post.dto.PostDto;
 import com.example.fastcampusmysql.domain.post.entity.Timeline;
 import com.example.fastcampusmysql.domain.post.service.PostReadService;
 import com.example.fastcampusmysql.domain.post.service.TimelineReadService;
@@ -21,20 +21,20 @@ public class GetTimelinePostsUsecase {
 
     final private TimelineReadService timelineReadService;
 
-    public PageCursor<Post> execute(Long memberId, CursorRequest cursorRequest) {
+    public PageCursor<PostDto> execute(Long memberId, CursorRequest cursorRequest) {
         var follows = followReadService.getFollowings(memberId);
         var followerMemberIds = follows
                 .stream()
                 .map(Follow::getToMemberId)
                 .toList();
 
-        return postReadService.getPosts(followerMemberIds, cursorRequest);
+        return postReadService.getPostDtos(followerMemberIds, cursorRequest);
     }
 
-    public PageCursor<Post> executeByTimeline(Long memberId, CursorRequest cursorRequest) {
+    public PageCursor<PostDto> executeByTimeline(Long memberId, CursorRequest cursorRequest) {
         var pagedTimelines = timelineReadService.getTimelines(memberId, cursorRequest);
         var postIds = pagedTimelines.body().stream().map(Timeline::getPostId).toList();
-        var posts = postReadService.getPosts(postIds);
+        var posts = postReadService.getPostDtos(postIds);
         return new PageCursor<>(pagedTimelines.nextCursorRequest(), posts);
     }
 }
