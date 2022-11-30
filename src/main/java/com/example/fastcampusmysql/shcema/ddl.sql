@@ -44,6 +44,8 @@ create table POST
         primary key (id)
 );
 
+alter table POST add column likeCount int;
+
 create index POST__index_member_id
     on POST (memberId);
 

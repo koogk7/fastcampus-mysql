@@ -60,4 +60,10 @@ public class PostController {
     }
 
 
+    @PostMapping("/posts/{postId}/like")
+    public void likePost(@PathVariable Long postId) {
+        postWriteService.likePost(postId);
+    }
+
+
 }
